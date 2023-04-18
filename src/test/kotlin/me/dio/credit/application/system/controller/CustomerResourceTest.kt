@@ -13,18 +13,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.math.BigDecimal
 import java.util.Random
+import org.springframework.test.annotation.DirtiesContext
 
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@ContextConfiguration
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class CustomerResourceTest {
   @Autowired
   private lateinit var customerRepository: CustomerRepository
@@ -136,14 +136,13 @@ class CustomerResourceTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("1000.0"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("000000"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua da Cami, 123"))
-      //.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
       .andDo(MockMvcResultHandlers.print())
   }
 
   @Test
   fun `should not find customer with invalid id and return 400 status`() {
     //given
-    val invalidId: Long = 2L
+    val invalidId = 2L
     //when
     //then
     mockMvc.perform(
@@ -219,7 +218,6 @@ class CustomerResourceTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("5000.0"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("45656"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua Updated"))
-      //.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
       .andDo(MockMvcResultHandlers.print())
   }
 
